@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # -----------------------------------------------------------------
   # Servicio de Base de Datos (Data Warehouse)
@@ -10,19 +8,19 @@ services:
     environment:
       POSTGRES_USER: devlights_user
       POSTGRES_PASSWORD: devlights_password
-      POSTGRES_DB: chinook_dw
+      POSTGRES_DB: chinook
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # Scripts de carga inicial (OLTP y OLAP)
-      - ./assets/oltp.sql:/docker-entrypoint-initdb.d/01_oltp.sql
-      - ./assets/olap.sql:/docker-entrypoint-initdb.d/02_olap.sql
+      - ./assets/01_oltp.sql:/docker-entrypoint-initdb.d/01_oltp.sql
+      - ./assets/02_olap.sql:/docker-entrypoint-initdb.d/02_olap.sql
     networks:
       - chinook_net
     ports:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U devlights_user -d chinook_dw"]
+      test: ["CMD-SHELL", "pg_isready -U devlights_user -d chinook"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,24 +32,16 @@ services:
     image: metabase/metabase:latest
     container_name: chinook_bi
     volumes:
-      # Mapeamos TU carpeta de backup para que levante con los gráficos listos
       - ./metabase_backup_data:/metabase-data
     environment:
       MB_DB_FILE: /metabase-data/metabase.db
-      MB_DB_TYPE: postgres
-      MB_DB_DBNAME: chinook_dw
-      MB_DB_PORT: 5432
-      MB_DB_USER: devlights_user
-      MB_DB_PASS: devlights_password
-      MB_DB_HOST: db
+    networks:
+      - chinook_net 
     ports:
       - "3000:3000"
-    networks:
-      - chinook_net
     depends_on:
       db:
         condition: service_healthy
-    restart: unless-stopped
 
   # -----------------------------------------------------------------
   # Servicio de Administración de BD (pgAdmin 4)
