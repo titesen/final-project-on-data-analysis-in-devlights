@@ -436,7 +436,7 @@ Este proyecto está bajo la Licencia MIT. Ver archivo `LICENSE` para más detall
 
 * **Proyecto**: Trabajo final Data Analytics - Devlights
 * **GitHub**: [@titesen](https://github.com/titesen)
-* **LinkedIn**: [Facundo González](https://www.linkedin.com/in/facundo-gonzalez)
+* **LinkedIn**: [Facundo González](https://www.linkedin.com/in/facundo-n-gonzalez/)
 
 ---
 
